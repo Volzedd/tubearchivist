@@ -157,7 +157,7 @@ class VideoDownloader(DownloaderBase):
         """initial obs"""
         self.obs = {
             "merge_output_format": "mp4",
-            "outtmpl": (self.CACHE_DIR + "/download/%(id)s.mp4"),
+            "outtmpl": (self.CACHE_DIR + "/download/%(id)s.%(ext)s"),
             "progress_hooks": [self._progress_hook],
             "noprogress": True,
             "continuedl": True,
@@ -226,7 +226,7 @@ class VideoDownloader(DownloaderBase):
         if self.obs["writethumbnail"]:
             # webp files don't get cleaned up automatically
             all_cached = ignore_filelist(os.listdir(dl_cache))
-            to_clean = [i for i in all_cached if not i.endswith(".mp4")]
+            to_clean = [i for i in all_cached if i.endswith(".webp")]
             for file_name in to_clean:
                 file_path = os.path.join(dl_cache, file_name)
                 os.remove(file_path)
@@ -255,6 +255,8 @@ class VideoDownloader(DownloaderBase):
         media_file = vid_dict["youtube_id"] + vid_dict["vid_ext"]
         old_path = os.path.join(self.CACHE_DIR, "download", media_file)
         new_path = os.path.join(self.MEDIA_DIR, vid_dict["media_url"])
+
+        print(f"Moving file from download path '{old_path}' to media path '{new_path}'")
         # move media file and fix permission
         shutil.move(old_path, new_path, copy_function=shutil.copyfile)
         if host_uid and host_gid:

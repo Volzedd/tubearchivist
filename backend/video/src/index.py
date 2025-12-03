@@ -270,19 +270,24 @@ class YoutubeVideo(YouTubeItem, YoutubeSubtitle):
         """find video path in dl cache"""
         cache_dir = EnvironmentSettings.CACHE_DIR
         video_id = self.json_data["youtube_id"]
-        video_ext = self.json_data["vid_ext"]
 
-        cache_path = f"{cache_dir}/download/{video_id}.{video_ext}"
-        if os.path.exists(cache_path):
-            return cache_path
+        for ext in [self.json_data["vid_ext"], ".mp4"]:
+            cache_path = f"{cache_dir}/download/{video_id}{ext}"
+            if os.path.exists(cache_path):
+                print(f"Video found in cache path: {cache_path}")
+                self.json_data["vid_ext"] = ext
+                return cache_path
+            
 
-        channel_path = os.path.join(
-            EnvironmentSettings.MEDIA_DIR,
-            self.json_data["channel"]["channel_id"],
-            f"{video_id}.{video_ext}",
-        )
-        if os.path.exists(channel_path):
-            return channel_path
+            channel_path = os.path.join(
+                EnvironmentSettings.MEDIA_DIR,
+                self.json_data["channel"]["channel_id"],
+                f"{video_id}{ext}",
+            )
+            if os.path.exists(channel_path):
+                print(f"Video found in channel path: {channel_path}")
+                self.json_data["vid_ext"] = ext
+                return channel_path
 
         raise FileNotFoundError
 
