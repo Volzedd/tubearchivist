@@ -252,7 +252,7 @@ class VideoDownloader(DownloaderBase):
             if host_uid and host_gid:
                 os.chown(folder, host_uid, host_gid)
         # move media file
-        media_file = vid_dict["youtube_id"] + vid_dict["vid_ext"]
+        media_file = vid_dict["youtube_id"] + ".mp4"
         old_path = os.path.join(self.CACHE_DIR, "download", media_file)
         new_path = os.path.join(self.MEDIA_DIR, vid_dict["media_url"])
         # move media file and fix permission

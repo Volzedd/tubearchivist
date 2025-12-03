@@ -40,7 +40,6 @@ class MediaStreamExtractor:
 
     def process_stream(self, stream):
         """parse stream to metadata"""
-        print(f"processing stream: {stream}")
         codec_type = stream.get("codec_type")
         if codec_type == "video":
             self._extract_video_metadata(stream)
