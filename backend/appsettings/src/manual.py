@@ -365,7 +365,8 @@ class ImportFolderScanner:
         """convert if needed"""
         current_path = current_video["media"]
         base_path, ext = os.path.splitext(current_path)
-        if ext == ".mp4":
+
+        if ext.lower() in self.EXT_MAP["media"]:
             return
 
         new_path = base_path + ".mp4"

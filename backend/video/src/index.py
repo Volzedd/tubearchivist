@@ -197,9 +197,12 @@ class YoutubeVideo(YouTubeItem, YoutubeSubtitle):
 
     def process_youtube_meta(self):
         """extract relevant fields from youtube"""
+        print(f"youtube_meta: {self.youtube_meta}")
         self._validate_id()
         # extract
         self.channel_id = self.youtube_meta["channel_id"]
+        self.video_type = VideoTypeEnum(self.youtube_meta["media_type"] + "s")
+
         last_refresh = int(datetime.now().timestamp())
         # build json_data basics
         self.json_data = {
@@ -207,6 +210,7 @@ class YoutubeVideo(YouTubeItem, YoutubeSubtitle):
             "description": self.youtube_meta.get("description", ""),
             "category": self.youtube_meta.get("categories", []),
             "vid_thumb_url": self.youtube_meta["thumbnail"],
+            "vid_ext": "." + self.youtube_meta["ext"],
             "tags": self.youtube_meta.get("tags", []),
             "published": self._build_published(),
             "vid_last_refresh": last_refresh,
@@ -266,14 +270,16 @@ class YoutubeVideo(YouTubeItem, YoutubeSubtitle):
         """find video path in dl cache"""
         cache_dir = EnvironmentSettings.CACHE_DIR
         video_id = self.json_data["youtube_id"]
-        cache_path = f"{cache_dir}/download/{video_id}.mp4"
+        video_ext = self.json_data["vid_ext"]
+
+        cache_path = f"{cache_dir}/download/{video_id}.{video_ext}"
         if os.path.exists(cache_path):
             return cache_path
 
         channel_path = os.path.join(
             EnvironmentSettings.MEDIA_DIR,
             self.json_data["channel"]["channel_id"],
-            f"{video_id}.mp4",
+            f"{video_id}.{video_ext}",
         )
         if os.path.exists(channel_path):
             return channel_path
@@ -310,7 +316,7 @@ class YoutubeVideo(YouTubeItem, YoutubeSubtitle):
         """build media_url for where file will be located"""
         self.json_data["media_url"] = os.path.join(
             self.json_data["channel"]["channel_id"],
-            self.json_data["youtube_id"] + ".mp4",
+            self.json_data["youtube_id"] + self.json_data["vid_ext"],
         )
 
     def delete_media_file(self):
