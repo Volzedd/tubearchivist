@@ -200,6 +200,7 @@ class YoutubeVideo(YouTubeItem, YoutubeSubtitle):
         self._validate_id()
         # extract
         self.channel_id = self.youtube_meta["channel_id"]
+        self.video_type = VideoTypeEnum(self.youtube_meta["media_type"] + "s")
         last_refresh = int(datetime.now().timestamp())
         # build json_data basics
         self.json_data = {
