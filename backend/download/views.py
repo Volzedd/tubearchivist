@@ -340,7 +340,7 @@ class DownloadAggsApiView(ApiBaseView):
                 "aggs": {
                     "channel_downloads": {
                         "multi_terms": {
-                            "size": 30,
+                            "size": 10000,
                             "terms": [
                                 {"field": "channel_name.keyword"},
                                 {"field": "channel_id"},
